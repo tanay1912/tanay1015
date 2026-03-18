@@ -1,0 +1,52 @@
+services:
+  fpm:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php-fpm
+    ports:
+      - "9000:9000"
+      - "80:80"
+    depends_on:
+      - db
+      - mailcatcher
+    volumes:
+      - ./:/var/www/html
+    environment:
+      - DB_HOST=db
+      - SMTP_HOST=mailcatcher
+      - SMTP_PORT=1025
+
+  db:
+    image: mariadb:10.6
+    container_name: db
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=server
+      - MYSQL_DATABASE=vibecode
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=server
+
+  mailcatcher:
+    image: sj26/mailcatcher
+    container_name: mailcatcher
+    ports:
+      - "1080:1080"   # Web UI
+      - "1025:1025"   # SMTP
+
+  adminer:
+    image: adminer:latest
+    container_name: adminer
+    restart: unless-stopped
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+      ADMINER_DESIGN: nette
+    ports:
+      - "8080:8080"
+
+volumes:
+  dbdata:

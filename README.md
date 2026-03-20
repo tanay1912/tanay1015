@@ -147,6 +147,24 @@ Outbound mail from the app is routed to Mailcatcher:
 
 ---
 
+## App screenshots
+
+### Dashboard
+
+![Call Analysis Dashboard](docs/screenshots/dashboard.png)
+
+### Call detail
+
+![Call Analysis Call Detail](docs/screenshots/call-detail.png)
+
+---
+
+## Data dump note
+
+I have added `vibecode.sql.gz` under the `db` folder with the result of all the recordings.
+
+---
+
 ## Project layout (relevant paths)
 
 ```

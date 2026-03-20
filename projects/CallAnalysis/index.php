@@ -100,7 +100,6 @@ $actionTotal = (int) ($stats['action_items_total'] ?? 0);
             <a href="/">Projects</a>
             <a href="<?= h($baseUrl) ?>/" class="active">Call Analysis</a>
         </nav>
-        <span class="domain">Overview</span>
     </header>
 
     <main class="ca-dashboard">
@@ -131,7 +130,7 @@ $actionTotal = (int) ($stats['action_items_total'] ?? 0);
                         </div>
                         <div class="ca-upload-banner__copy">
                             <h2 class="ca-upload-banner__title">Add a call recording</h2>
-                            <p class="ca-upload-banner__hint">MP3, WAV, M4A, WebM, OGG · up to ~24 MB · processed in the background</p>
+                            <p class="ca-upload-banner__hint">MP3, WAV, M4A, WebM, OGG · up to ~24 MB</p>
                         </div>
                     </div>
                     <div class="ca-upload-banner__file-area" id="ca-upload-file-area">
@@ -286,17 +285,33 @@ $actionTotal = (int) ($stats['action_items_total'] ?? 0);
                         return;
                     }
                     body.textContent = '';
-                    if (!keywords || keywords.length === 0) {
+                    var list = Array.isArray(keywords) ? keywords : [];
+                    if (list.length === 0) {
                         var empty = document.createElement('span');
                         empty.className = 'ca-dash-keywords__empty';
                         empty.textContent = '— No keyword data yet';
                         body.appendChild(empty);
                         return;
                     }
-                    keywords.forEach(function (kw) {
+                    list.forEach(function (item) {
+                        var label = typeof item === 'string' ? item : (item && item.keyword != null ? String(item.keyword) : '');
+                        var count = item && typeof item === 'object' && item.count != null ? Number(item.count) : NaN;
+                        if (!label) {
+                            return;
+                        }
                         var sp = document.createElement('span');
                         sp.className = 'ca-dash-kw';
-                        sp.textContent = kw;
+                        var lab = document.createElement('span');
+                        lab.className = 'ca-dash-kw__label';
+                        lab.textContent = label;
+                        sp.appendChild(lab);
+                        if (isFinite(count)) {
+                            var cnt = document.createElement('span');
+                            cnt.className = 'ca-dash-kw__count';
+                            cnt.textContent = String(count);
+                            cnt.title = 'Times this term appeared in analyzed calls';
+                            sp.appendChild(cnt);
+                        }
                         body.appendChild(sp);
                     });
                 }

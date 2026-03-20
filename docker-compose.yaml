@@ -9,13 +9,39 @@ services:
       - "80:80"
     depends_on:
       - db
+      - redis
       - mailcatcher
     volumes:
       - ./:/var/www/html
     environment:
       - DB_HOST=db
+      - REDIS_HOST=redis
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
       - SMTP_HOST=mailcatcher
       - SMTP_PORT=1025
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  callanalysis-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: callanalysis-worker
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./:/var/www/html
+    environment:
+      - DB_HOST=db
+      - REDIS_HOST=redis
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    command: ["php", "/var/www/html/projects/CallAnalysis/worker.php"]
+    restart: unless-stopped
 
   db:
     image: mariadb:10.6

@@ -21,6 +21,15 @@ RUN apt-get update \
  && mkdir -p /var/run/nginx \
  && rm -rf /var/lib/apt/lists/*
 
+# Redis extension (queue for Call Analysis worker)
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends $PHPIZE_DEPS \
+ && pecl install redis \
+ && docker-php-ext-enable redis \
+ && apt-get purge -y $PHPIZE_DEPS \
+ && apt-get autoremove -y \
+ && rm -rf /var/lib/apt/lists/*
+
 # Nginx logs to stdout/stderr
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
  && ln -sf /dev/stderr /var/log/nginx/error.log

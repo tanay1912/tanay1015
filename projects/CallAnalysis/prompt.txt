@@ -1,0 +1,99 @@
+I want to build an application where our team can upload call recording
+
+Than we will need to do the following i have shared in the screenshot
+
+Application workflow should be like the what i have shared in the screenshot 
+
+Dashboard in another screenshot
+
+When user click on indivudual call that dashboard will be like 
+
+Should also display 
+
+Tell me the requirement first I have Open AI API key to use
+
+also the technology we have install in docker is fine or not let me know if we need to use something else for this, share me a plan and I will finalize the plan to develop
+------------------------------
+Screenshot Links
+1: https://www.awesomescreenshot.com/image/59369162?key=4ba029e0cc62af5653ec5fd582031a40
+2: https://www.awesomescreenshot.com/image/59369177?key=376cb6dc942154667cda9806df7967bf
+3: https://www.awesomescreenshot.com/image/59369186?key=6d3ef187959e4c2ef380814a96a79717
+4: https://www.awesomescreenshot.com/image/59369190?key=96c6b42390a61a3adbda3bd94e3e5c3b
+5: https://www.awesomescreenshot.com/image/59369195?key=b99ea3399c011c6826e120eb1b1a750f
+------------------------------
+----------------------------------------------------------------------------------------------------
+PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1005 Can't create table `vibecode`.`ca_transcript_segments` (errno: 150 "Foreign key constraint is incorrectly formed") in /var/www/html/projects/CallAnalysis/install.php:28
+Stack trace:
+#0 /var/www/html/projects/CallAnalysis/install.php(28): PDO->exec()
+#1 {main}
+  thrown in /var/www/html/projects/CallAnalysis/install.php on line 28
+----------------------------------------------------------------------------------------------------
+
+Perfect now let's work on UI
+
+Remove footer 
+
+Set OPENAI_API_KEY in Docker · Worker: callanalysis-worker
+
+dashboard should be more attractive and not longer in height but cover in one screen by width
+----------------------------------------------------------------------------------------------------
+
+Still needed improvement in UI 
+
+make all the pages with proper styling 
+
+----------------------------------------------------------------------------------------------------
+Make the dashboard matric ca-dash-metrics little bigger and top keywords contains large number of keywords
+
+change the place of add recording and more stylish in look and feel
+----------------------------------------------------------------------------------------------------
+create a script which will clear all the table and reset 
+----------------------------------------------------------------------------------------------------
+Move reset and install script in sepereate directory called db
+----------------------------------------------------------------------------------------------------
+on choose file once we choose file that is not showing selected file so user can not get idethat file already selected
+
+make proper styling of uploaded field
+----------------------------------------------------------------------------------------------------
+Recording queued message styling is not proper, it should display below the file upload button
+
+also when added to the queue page is reloading, instead of reloading page added in recent call
+----------------------------------------------------------------------------------------------------
+Recording queued for analysis message should be short period of time like 3 seconds
+
+also when added in queuq it would be best if we can show progress bar in recent calls and status should update after completion becuase currently status is updated only after page refresh
+----------------------------------------------------------------------------------------------------
+Need to add 2 more section in individual call page like screenshot
+
+Screenshot:
+1: https://www.awesomescreenshot.com/image/59369277?key=2694abbd43cacf475b9da5b4e212e579
+2: https://www.awesomescreenshot.com/image/59369283?key=9a7b02d9e81d9b1112ead74deeeb778f
+----------------------------------------------------------------------------------------------------
+Positive Observations and Negative Observations
+
+should must be AI generated
+----------------------------------------------------------------------------------------------------
+I am always getting Not assessed in "Question Topic" and always
+
+No AI-generated items stored in "AI-generated notes"
+
+you can use Open AI model here for that 
+----------------------------------------------------------------------------------------------------
+below fields
+
+questionnaire_coverage_json	top_discussed_json	positive_observations_json	negative_observations_json
+
+alwasy return null
+----------------------------------------------------------------------------------------------------
+
+Hi, Karen. This is Christopher from Premier Kitchen Cabinets calling about your order. Christopher, I'm honestly really upset right now. Oh, I'm really sorry to hear that. What seems to be the issue? My cabinets were supposed to arrive last Friday, and nobody even told me they were delayed. Yeah, I completely understand why that would be frustrating. My contractor is literally waiting, and my entire kitchen renovation is stuck. I totally understand. That must be very stressful. It really is. Let me just pull up your order so I can see what happened. Okay. Hmm. Okay, I see the order here. It looks like the shipment was delayed at the distribution center due to a logistics issue. Then why wasn't I told about it? Yeah, that's a fair question. You absolutely should have been notified. Exactly. I completely agree with you. My contractor is charging me extra for delays. Oh, wow. Yeah, that can definitely add up. What I'm going to do is escalate this immediately with our logistics manager. I really need these cabinets this week. Let me check the updated shipping schedule. Just a second. Okay. Alright, it looks like the cabinets have actually already left the warehouse. So when will they arrive? The current estimate is Wednesday. That's still later than promised. I understand, and I'm really sorry about that. I'll personally contact the delivery company and see if we can expedite the shipment. I'd appreciate that. And I'll make sure you get updates directly from me so you're not left wondering. Thank you. Again, Karen, I sincerely apologize for the inconvenience.
+
+this is the sample transcript
+
+----------------------------------------------------------------------------------------------------
+
+why even AI notes always returns empty that must should be something for positive / negative
+
+am i missing something
+
+is open ai working correctly?

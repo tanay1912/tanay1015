@@ -170,6 +170,51 @@ function ca_parse_string_list(array $items): array
     return $out;
 }
 
+/**
+ * Transcript segments have no true diarization in storage.
+ * We infer two alternating speakers for readability in the UI.
+ *
+ * @param list<array{segment_index:mixed,start_sec:mixed,end_sec:mixed,text:mixed}> $segments
+ * @return list<array{segment_index:mixed,start_sec:mixed,end_sec:mixed,text:string,speaker:string}>
+ */
+function ca_with_inferred_speakers(array $segments): array
+{
+    $out = [];
+    $speakerIdx = 0;
+    $slotLabels = ['Agent', 'Customer'];
+    foreach ($segments as $i => $seg) {
+        $text = trim((string) ($seg['text'] ?? ''));
+        if ($text === '') {
+            continue;
+        }
+        // If text explicitly carries a role prefix, preserve it.
+        if (preg_match('/^\s*(agent|rep|representative)\s*:/i', $text)) {
+            $speakerIdx = 0;
+            $text = trim((string) preg_replace('/^\s*(agent|rep|representative)\s*:\s*/i', '', $text));
+        } elseif (preg_match('/^\s*(customer|client|caller)\s*:/i', $text)) {
+            $speakerIdx = 1;
+            $text = trim((string) preg_replace('/^\s*(customer|client|caller)\s*:\s*/i', '', $text));
+        } elseif (preg_match('/^\s*([A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2})\s*:\s*(.+)$/u', $text, $m)) {
+            // Use explicit person names when transcript includes "Name: ..." prefixes.
+            $label = trim($m[1]);
+            $spoken = trim($m[2]);
+            if ($spoken !== '') {
+                $text = $spoken;
+            }
+            $slotLabels[$speakerIdx] = $label;
+        } elseif ($i > 0) {
+            // Without diarization, alternate on each segment so both sides are visible.
+            $speakerIdx = 1 - $speakerIdx;
+        }
+
+        $seg['text'] = $text;
+        $seg['speaker'] = $slotLabels[$speakerIdx] ?? ($speakerIdx === 0 ? 'Agent' : 'Customer');
+        $out[] = $seg;
+    }
+
+    return $out;
+}
+
 $baseUrl = '/projects/CallAnalysis';
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 if ($id <= 0) {
@@ -187,6 +232,7 @@ if (!$call) {
 }
 
 $segments = $repo->getSegments($id);
+$segmentsWithSpeakers = ca_with_inferred_speakers($segments);
 $analysis = $repo->getAnalysis($id);
 $agentScores = $repo->getAgentScores($id);
 $actions = $repo->getActionItems($id);
@@ -405,16 +451,21 @@ if ($analysis && array_key_exists('negative_observations_json', $analysis) && $a
                         <p class="error">Audio file missing.</p>
                     <?php endif; ?>
 
-                    <?php if ($segments === []): ?>
+                    <?php if ($segmentsWithSpeakers === []): ?>
                         <p class="muted">Transcript will appear after transcription completes.</p>
                     <?php else: ?>
+                        <p class="ca-transcript-note">Speaker labels are inferred for readability (not true diarization).</p>
                         <div id="ca-transcript" class="ca-transcript" role="log" aria-live="polite">
-                            <?php foreach ($segments as $s): ?>
-                                <span
-                                    class="ca-transcript__seg"
+                            <?php foreach ($segmentsWithSpeakers as $s): ?>
+                                <?php $isLeft = (($s['speaker'] ?? 'Agent') === 'Agent'); ?>
+                                <div
+                                    class="ca-transcript__seg <?= $isLeft ? 'ca-transcript__seg--left' : 'ca-transcript__seg--right' ?>"
                                     data-start="<?= h((string) $s['start_sec']) ?>"
                                     data-end="<?= h((string) $s['end_sec']) ?>"
-                                ><?= h((string) $s['text']) ?> </span>
+                                >
+                                    <span class="ca-transcript__speaker"><?= h((string) $s['speaker']) ?></span>
+                                    <span class="ca-transcript__text"><?= h((string) $s['text']) ?></span>
+                                </div>
                             <?php endforeach; ?>
                         </div>
                     <?php endif; ?>
